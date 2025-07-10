@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Upload, FileText, Send, Eye, MoreHorizontal, LogOut, Search, Filter, Plus, Users, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Upload, FileText, Send, Eye, MoreHorizontal, LogOut, Search, Filter, Plus, Users, Clock, CheckCircle2, XCircle, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -13,20 +15,20 @@ import AIResultPopup from '@/components/AIResultPopup';
 
 interface Document {
   id: string;
-  candidateName: string;
-  candidateEmail: string;
+  candidateId: string;
+  documentId: string;
   fileName: string;
   fileType: string;
   status: 'pending' | 'verified' | 'rejected';
   confidenceScore: number;
   uploadDate: string;
   source: 'manual' | 'digilocker';
+  fileUrl?: string;
 }
 
 interface DocumentRequest {
   id: string;
-  candidateName: string;
-  candidateEmail: string;
+  candidateId: string;
   docType: string;
   status: 'open' | 'fulfilled';
   requestDate: string;
@@ -47,7 +49,7 @@ const HRDashboard = () => {
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (!userData) {
-      navigate('/');
+      navigate('/login');
       return;
     }
     
@@ -64,54 +66,55 @@ const HRDashboard = () => {
   const loadMockData = () => {
     setDocuments([
       {
-        id: '1',
-        candidateName: 'John Smith',
-        candidateEmail: 'john@email.com',
-        fileName: 'resume_john_smith.pdf',
+        id: 'DOC001',
+        candidateId: 'USR7X9K2M',
+        documentId: 'RES001',
+        fileName: 'resume_001.pdf',
         fileType: 'resume',
         status: 'verified',
         confidenceScore: 92,
         uploadDate: '2024-01-15',
-        source: 'manual'
+        source: 'manual',
+        fileUrl: 'https://drive.google.com/file/d/sample1'
       },
       {
-        id: '2',
-        candidateName: 'Sarah Johnson',
-        candidateEmail: 'sarah@email.com',
-        fileName: 'degree_certificate.pdf',
+        id: 'DOC002',
+        candidateId: 'USR3M8N1K',
+        documentId: 'CER001',
+        fileName: 'degree_certificate_001.pdf',
         fileType: 'certificate',
         status: 'pending',
         confidenceScore: 0,
         uploadDate: '2024-01-16',
-        source: 'digilocker'
+        source: 'digilocker',
+        fileUrl: 'https://drive.google.com/file/d/sample2'
       },
       {
-        id: '3',
-        candidateName: 'Mike Chen',
-        candidateEmail: 'mike@email.com',
-        fileName: 'experience_letter.pdf',
-        fileType: 'certificate',
+        id: 'DOC003',
+        candidateId: 'USR5P2Q8R',
+        documentId: 'EXP001',
+        fileName: 'experience_letter_001.pdf',
+        fileType: 'experience',
         status: 'rejected',
         confidenceScore: 45,
         uploadDate: '2024-01-14',
-        source: 'manual'
+        source: 'manual',
+        fileUrl: 'https://drive.google.com/file/d/sample3'
       }
     ]);
 
     setRequests([
       {
-        id: '1',
-        candidateName: 'Emma Wilson',
-        candidateEmail: 'emma@email.com',
+        id: 'REQ001',
+        candidateId: 'USR9K4L6N',
         docType: 'Degree Certificate',
         status: 'open',
         requestDate: '2024-01-16',
         notes: 'Please provide your bachelor degree certificate'
       },
       {
-        id: '2',
-        candidateName: 'David Brown',
-        candidateEmail: 'david@email.com',
+        id: 'REQ002',
+        candidateId: 'USR2B7M9P',
         docType: 'Experience Letter',
         status: 'fulfilled',
         requestDate: '2024-01-15',
@@ -124,35 +127,35 @@ const HRDashboard = () => {
     switch (status) {
       case 'verified':
         return (
-          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100 dark:bg-green-900 dark:text-green-300">
             <CheckCircle2 className="h-3 w-3 mr-1" />
             Verified
           </Badge>
         );
       case 'rejected':
         return (
-          <Badge className="bg-red-50 text-red-700 border-red-200 hover:bg-red-100">
+          <Badge className="bg-red-50 text-red-700 border-red-200 hover:bg-red-100 dark:bg-red-900 dark:text-red-300">
             <XCircle className="h-3 w-3 mr-1" />
             Rejected
           </Badge>
         );
       case 'pending':
         return (
-          <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100">
+          <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 dark:bg-amber-900 dark:text-amber-300">
             <Clock className="h-3 w-3 mr-1" />
             Pending
           </Badge>
         );
       case 'open':
         return (
-          <Badge className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+          <Badge className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300">
             <FileText className="h-3 w-3 mr-1" />
             Open
           </Badge>
         );
       case 'fulfilled':
         return (
-          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+          <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100 dark:bg-green-900 dark:text-green-300">
             <CheckCircle2 className="h-3 w-3 mr-1" />
             Fulfilled
           </Badge>
@@ -164,22 +167,19 @@ const HRDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    navigate('/');
+    navigate('/login');
     toast({
       title: 'Logged Out',
       description: 'You have been successfully logged out.',
     });
   };
 
-  const handleRequestDocument = () => {
+  const handleUploadDocument = () => {
+    // In a real implementation, this would integrate with Google Drive API
     toast({
-      title: 'Document Requested',
-      description: 'Request sent to candidate successfully.',
+      title: 'Upload Feature',
+      description: 'This will integrate with Google Drive API for document upload.',
     });
-  };
-
-  const handleUploadForCandidate = () => {
-    navigate('/upload');
   };
 
   const handleViewDocument = (doc: Document) => {
@@ -187,9 +187,31 @@ const HRDashboard = () => {
     setShowAIPopup(true);
   };
 
+  const handleVerifyDocument = async (docId: string) => {
+    // In a real implementation, this would call the Flask API
+    toast({
+      title: 'Document Verification',
+      description: 'Sending document to AI verification service...',
+    });
+    
+    // Simulate API call
+    setTimeout(() => {
+      setDocuments(prev => prev.map(doc => 
+        doc.id === docId 
+          ? { ...doc, status: 'verified' as const, confidenceScore: Math.floor(Math.random() * 30) + 70 }
+          : doc
+      ));
+      
+      toast({
+        title: 'Verification Complete',
+        description: 'Document has been verified successfully.',
+      });
+    }, 2000);
+  };
+
   const filteredDocuments = documents.filter(document => {
-    const matchesSearch = document.candidateName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         document.candidateEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = document.candidateId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         document.documentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          document.fileName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || document.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -198,24 +220,24 @@ const HRDashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Modern Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      {/* Header */}
+      <header className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <div className="bg-blue-600 p-3 rounded-xl shadow-lg">
-                <FileText className="h-7 w-7 text-white" />
+                <Shield className="h-7 w-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">HR Portal</h1>
-                <p className="text-gray-500 font-medium">Document Verification Dashboard</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">HR Portal</h1>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">Document Verification Dashboard</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">Welcome back,</p>
-                <p className="text-sm text-gray-500">{user.name}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">Welcome back,</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{user.id}</p>
               </div>
               <Button onClick={handleLogout} variant="outline" className="rounded-lg border-gray-300 hover:border-gray-400">
                 <LogOut className="h-4 w-4 mr-2" />
@@ -229,207 +251,176 @@ const HRDashboard = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-white border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
+          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Documents</p>
-                  <p className="text-3xl font-bold text-gray-900">{documents.length}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Documents</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{documents.length}</p>
                 </div>
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <FileText className="h-6 w-6 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                  <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-white border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
+          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Verified</p>
-                  <p className="text-3xl font-bold text-green-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Verified</p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
                     {documents.filter(d => d.status === 'verified').length}
                   </p>
                 </div>
-                <div className="bg-green-100 p-3 rounded-lg">
-                  <CheckCircle2 className="h-6 w-6 text-green-600" />
+                <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+                  <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-white border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
+          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Pending Review</p>
-                  <p className="text-3xl font-bold text-amber-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Pending Review</p>
+                  <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">
                     {documents.filter(d => d.status === 'pending').length}
                   </p>
                 </div>
-                <div className="bg-amber-100 p-3 rounded-lg">
-                  <Clock className="h-6 w-6 text-amber-600" />
+                <div className="bg-amber-100 dark:bg-amber-900 p-3 rounded-lg">
+                  <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-white border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
+          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Active Requests</p>
-                  <p className="text-3xl font-bold text-blue-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Active Requests</p>
+                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                     {requests.filter(r => r.status === 'open').length}
                   </p>
                 </div>
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Send className="h-6 w-6 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                  <Send className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Documents Section */}
-          <div className="lg:col-span-2">
-            <Card className="bg-white border-0 shadow-sm rounded-xl">
-              <CardHeader className="pb-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div>
-                    <CardTitle className="text-xl font-bold text-gray-900">Candidate Documents</CardTitle>
-                    <CardDescription className="text-gray-500">
-                      Review and manage uploaded verification documents
-                    </CardDescription>
-                  </div>
-                  <Button onClick={handleUploadForCandidate} className="bg-blue-600 hover:bg-blue-700 rounded-lg px-6">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Upload Document
-                  </Button>
-                </div>
-                
-                {/* Search and Filter */}
-                <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      placeholder="Search candidates, emails, or documents..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 rounded-lg border-gray-300 focus:border-blue-500"
-                    />
-                  </div>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-full sm:w-48 rounded-lg border-gray-300">
-                      <Filter className="h-4 w-4 mr-2" />
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="verified">Verified</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="rejected">Rejected</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-              <CardContent className="px-0">
-                <div className="space-y-1">
-                  {filteredDocuments.map((doc) => (
-                    <div key={doc.id} className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
-                      <div className="flex items-center space-x-4 flex-1">
-                        <div className="bg-blue-100 p-3 rounded-lg">
-                          <FileText className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-gray-900 truncate">{doc.candidateName}</h4>
-                          <p className="text-sm text-gray-500 truncate">{doc.candidateEmail}</p>
-                          <p className="text-xs text-gray-400 truncate">{doc.fileName}</p>
-                        </div>
+        {/* Main Documents Table */}
+        <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl mb-8">
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Document Verification Queue</CardTitle>
+                <CardDescription className="text-gray-500 dark:text-gray-400">
+                  Review and manage candidate document verification requests
+                </CardDescription>
+              </div>
+              <Button onClick={handleUploadDocument} className="bg-blue-600 hover:bg-blue-700 rounded-lg px-6">
+                <Plus className="h-4 w-4 mr-2" />
+                Upload Document
+              </Button>
+            </div>
+            
+            {/* Search and Filter */}
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search by Candidate ID, Document ID, or filename..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 rounded-lg border-gray-300 focus:border-blue-500 dark:bg-slate-700 dark:border-slate-600"
+                />
+              </div>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full sm:w-48 rounded-lg border-gray-300 dark:bg-slate-700 dark:border-slate-600">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="verified">Verified</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardHeader>
+          <CardContent className="px-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Candidate ID</TableHead>
+                  <TableHead>Document ID</TableHead>
+                  <TableHead>Document Type</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Confidence Score</TableHead>
+                  <TableHead>Upload Date</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredDocuments.map((doc) => (
+                  <TableRow key={doc.id}>
+                    <TableCell className="font-medium">{doc.candidateId}</TableCell>
+                    <TableCell className="font-mono text-sm">{doc.documentId}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-gray-400" />
+                        <span className="capitalize">{doc.fileType}</span>
                       </div>
-                      
-                      <div className="flex items-center space-x-6">
-                        <div className="text-center">
-                          {getStatusBadge(doc.status)}
-                          {doc.status !== 'pending' && (
-                            <div className="mt-2">
-                              <div className="flex items-center space-x-2">
-                                <div className="w-16">
-                                  <Progress 
-                                    value={doc.confidenceScore} 
-                                    className="h-2" 
-                                  />
-                                </div>
-                                <span className="text-xs font-medium text-gray-600">{doc.confidenceScore}%</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        
+                    </TableCell>
+                    <TableCell>{getStatusBadge(doc.status)}</TableCell>
+                    <TableCell>
+                      {doc.status !== 'pending' ? (
                         <div className="flex items-center space-x-2">
-                          <Button 
-                            onClick={() => handleViewDocument(doc)}
-                            variant="outline" 
-                            size="sm"
-                            className="rounded-lg border-gray-300 hover:border-blue-400 hover:text-blue-600"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            Review
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="rounded-lg">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="rounded-lg">
-                              <DropdownMenuItem onClick={handleRequestDocument}>
-                                <Send className="h-4 w-4 mr-2" />
-                                Request More Docs
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <Progress value={doc.confidenceScore} className="w-16 h-2" />
+                          <span className="text-sm font-medium">{doc.confidenceScore}%</span>
                         </div>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-500 dark:text-gray-400">
+                      {doc.uploadDate}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Button 
+                          onClick={() => handleViewDocument(doc)}
+                          variant="outline" 
+                          size="sm"
+                          className="rounded-lg"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Review
+                        </Button>
+                        {doc.status === 'pending' && (
+                          <Button 
+                            onClick={() => handleVerifyDocument(doc.id)}
+                            size="sm"
+                            className="bg-blue-600 hover:bg-blue-700 rounded-lg"
+                          >
+                            Verify
+                          </Button>
+                        )}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar - Document Requests */}
-          <div className="lg:col-span-1">
-            <Card className="bg-white border-0 shadow-sm rounded-xl">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-gray-900">Document Requests</CardTitle>
-                <CardDescription className="text-gray-500">Pending requests to candidates</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {requests.map((request) => (
-                    <div key={request.id} className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
-                      <div className="flex justify-between items-start mb-3">
-                        <h4 className="font-semibold text-gray-900 text-sm truncate">{request.candidateName}</h4>
-                        {getStatusBadge(request.status)}
-                      </div>
-                      <p className="text-sm font-medium text-gray-700 mb-2">{request.docType}</p>
-                      <p className="text-xs text-gray-500 mb-3 line-clamp-2">{request.notes}</p>
-                      <p className="text-xs text-gray-400">Requested: {request.requestDate}</p>
-                    </div>
-                  ))}
-                </div>
-                
-                <Button onClick={handleRequestDocument} className="w-full mt-6 bg-blue-600 hover:bg-blue-700 rounded-lg">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Request
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
 
       {/* AI Results Popup */}
@@ -444,10 +435,10 @@ const HRDashboard = () => {
           status={selectedDocument.status}
           confidenceScore={selectedDocument.confidenceScore}
           extractedInfo={{
-            name: selectedDocument.candidateName,
-            degree: 'Bachelor of Technology',
-            institution: 'ABC University',
-            year: '2020'
+            candidateId: selectedDocument.candidateId,
+            documentId: selectedDocument.documentId,
+            fileType: selectedDocument.fileType,
+            uploadDate: selectedDocument.uploadDate
           }}
           onApprove={() => {
             toast({

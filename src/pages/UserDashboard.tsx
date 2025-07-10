@@ -9,6 +9,7 @@ import DocumentRequestsList from '@/components/dashboard/DocumentRequestsList';
 
 interface UserDocument {
   id: string;
+  documentId: string;
   fileName: string;
   fileType: string;
   status: 'pending' | 'verified' | 'rejected';
@@ -16,12 +17,12 @@ interface UserDocument {
   uploadDate: string;
   source: 'manual' | 'digilocker';
   hrNotes?: string;
+  fileUrl?: string;
 }
 
 interface PendingRequest {
   id: string;
-  hrName: string;
-  hrEmail: string;
+  hrId: string;
   docType: string;
   notes: string;
   requestDate: string;
@@ -38,7 +39,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (!userData) {
-      navigate('/');
+      navigate('/login');
       return;
     }
     
@@ -58,50 +59,54 @@ const UserDashboard = () => {
   const loadMockData = () => {
     setDocuments([
       {
-        id: '1',
+        id: 'DOC001',
+        documentId: 'RES001',
         fileName: 'my_resume.pdf',
         fileType: 'resume',
         status: 'verified',
         confidenceScore: 94,
         uploadDate: '2024-01-15',
         source: 'manual',
-        hrNotes: 'Resume verified successfully. All information matches.'
+        hrNotes: 'Resume verified successfully. All information matches.',
+        fileUrl: 'https://drive.google.com/file/d/sample1'
       },
       {
-        id: '2',
+        id: 'DOC002',
+        documentId: 'CER001',
         fileName: 'degree_certificate.pdf',
         fileType: 'certificate',
         status: 'pending',
         confidenceScore: 0,
         uploadDate: '2024-01-16',
-        source: 'digilocker'
+        source: 'digilocker',
+        fileUrl: 'https://drive.google.com/file/d/sample2'
       },
       {
-        id: '3',
+        id: 'DOC003',
+        documentId: 'EXP001',
         fileName: 'experience_letter.pdf',
-        fileType: 'certificate',
+        fileType: 'experience',
         status: 'rejected',
         confidenceScore: 42,
         uploadDate: '2024-01-14',
         source: 'manual',
-        hrNotes: 'Document quality insufficient. Please upload a clearer version.'
+        hrNotes: 'Document quality insufficient. Please upload a clearer version.',
+        fileUrl: 'https://drive.google.com/file/d/sample3'
       }
     ]);
 
     setRequests([
       {
-        id: '1',
-        hrName: 'Sarah Wilson',
-        hrEmail: 'sarah.wilson@techcorp.com',
+        id: 'REQ001',
+        hrId: 'HR5M8K9L',
         docType: 'Experience Certificate',
         notes: 'Please provide your previous employment certificate from ABC Corp',
         requestDate: '2024-01-16',
         dueDate: '2024-01-20'
       },
       {
-        id: '2',
-        hrName: 'Mike Johnson',
-        hrEmail: 'mike.j@startupco.com',
+        id: 'REQ002',
+        hrId: 'HR2B7N4P',
         docType: 'Skill Certification',
         notes: 'AWS certification or similar cloud platform certification required',
         requestDate: '2024-01-15',
@@ -113,7 +118,7 @@ const UserDashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       <UserDashboardHeader user={user} />
 
       <div className="max-w-7xl mx-auto px-6 py-8">

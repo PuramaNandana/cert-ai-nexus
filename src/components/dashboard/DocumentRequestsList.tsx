@@ -9,8 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface PendingRequest {
   id: string;
-  hrName: string;
-  hrEmail: string;
+  hrId: string;
   docType: string;
   notes: string;
   requestDate: string;
@@ -34,28 +33,29 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
   };
 
   return (
-    <Card className="bg-white border-0 shadow-sm rounded-xl">
+    <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl">
       <CardHeader>
-        <CardTitle className="text-lg font-bold text-gray-900">Document Requests</CardTitle>
-        <CardDescription className="text-gray-500">HR has requested these documents</CardDescription>
+        <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">Document Requests</CardTitle>
+        <CardDescription className="text-gray-500 dark:text-gray-400">HR has requested these documents</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {requests.map((request) => (
-            <div key={request.id} className="p-4 border-2 border-orange-200 rounded-xl bg-orange-50 hover:bg-orange-100 transition-colors">
+            <div key={request.id} className="p-4 border-2 border-orange-200 dark:border-orange-800 rounded-xl bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900 text-sm">{request.docType}</h4>
-                  <p className="text-xs text-gray-600">From: {request.hrName}</p>
+                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{request.docType}</h4>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 font-mono">From: {request.hrId}</p>
                 </div>
-                <Badge className="bg-orange-100 text-orange-800 border-orange-300 rounded-full">
+                <Badge className="bg-orange-100 text-orange-800 border-orange-300 rounded-full dark:bg-orange-900 dark:text-orange-300">
                   Urgent
                 </Badge>
               </div>
               
-              <p className="text-sm text-gray-700 mb-4 line-clamp-2">{request.notes}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">{request.notes}</p>
               
-              <div className="text-xs text-gray-500 mb-4 space-y-1">
+              <div className="text-xs text-gray-500 dark:text-gray-400 mb-4 space-y-1">
+                <p>Request ID: <span className="font-mono">{request.id}</span></p>
                 <p>Requested: {request.requestDate}</p>
                 <p>Due: {request.dueDate}</p>
               </div>

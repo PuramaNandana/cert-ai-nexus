@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface UserDashboardHeaderProps {
   user: {
+    id: string;
     name: string;
     role: string;
   };
@@ -19,7 +20,7 @@ const UserDashboardHeader = ({ user }: UserDashboardHeaderProps) => {
   const handleLogout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('digilocker_connected');
-    navigate('/');
+    navigate('/login');
     toast({
       title: 'Logged Out',
       description: 'You have been successfully logged out.',
@@ -27,7 +28,7 @@ const UserDashboardHeader = ({ user }: UserDashboardHeaderProps) => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 shadow-sm">
+    <header className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
@@ -35,14 +36,14 @@ const UserDashboardHeader = ({ user }: UserDashboardHeaderProps) => {
               <User className="h-7 w-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">My Documents</h1>
-              <p className="text-gray-500 font-medium">Document Verification Portal</p>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Documents</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium">Document Verification Portal</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <div className="text-right">
-              <p className="text-sm font-medium text-gray-900">Welcome back,</p>
-              <p className="text-sm text-gray-500">{user.name}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">Welcome back,</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-mono">{user.id}</p>
             </div>
             <Button onClick={handleLogout} variant="outline" className="rounded-lg border-gray-300 hover:border-gray-400">
               <LogOut className="h-4 w-4 mr-2" />
@@ -51,7 +52,7 @@ const UserDashboardHeader = ({ user }: UserDashboardHeaderProps) => {
           </div>
         </div>
       </div>
-    </header>
+    </div>
   );
 };
 

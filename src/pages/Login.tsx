@@ -26,6 +26,8 @@ const Login = () => {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Please enter a valid email address';
+    } else if (role === 'hr' && !isOrganizationEmail(email)) {
+      newErrors.email = 'HR users must use organization email (e.g., @company.com)';
     }
     
     if (!password) {
@@ -38,6 +40,13 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const isOrganizationEmail = (email: string) => {
+    // Check for common organization domain patterns
+    const orgDomains = ['company.com', 'corp.com', 'techcorp.com', 'enterprise.com'];
+    const domain = email.split('@')[1];
+    return orgDomains.includes(domain) || domain?.includes('corp') || domain?.includes('company');
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -47,13 +56,16 @@ const Login = () => {
     
     // Simulate API call
     setTimeout(() => {
+      // Generate user ID based on role
+      const userId = role === 'hr' ? `HR${Math.random().toString(36).substr(2, 6).toUpperCase()}` : `USR${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+      
       // Store user session
       localStorage.setItem('user', JSON.stringify({
-        id: Math.random().toString(36).substr(2, 9),
+        id: userId,
         email,
         role,
         name: email.split('@')[0],
-        company: role === 'hr' ? 'TechCorp Inc.' : null
+        company: role === 'hr' ? email.split('@')[1] : null
       }));
 
       toast({
@@ -73,14 +85,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Back to Landing */}
         <div className="mb-6">
           <Button 
             variant="ghost" 
             onClick={() => navigate('/landing')} 
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
@@ -94,32 +106,32 @@ const Login = () => {
               <Shield className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to your VerifyPro account</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back</h1>
+          <p className="text-gray-600 dark:text-gray-300">Sign in to your VerifyPro account</p>
         </div>
 
-        <Card className="shadow-xl border-0 rounded-2xl">
+        <Card className="shadow-xl border-0 rounded-2xl dark:bg-slate-800">
           <CardHeader className="space-y-4">
             <div className="text-center">
-              <CardTitle className="text-2xl font-bold text-gray-900">Sign In</CardTitle>
-              <CardDescription className="text-gray-600">
+              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Sign In</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 Choose your role and access your portal
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent>
             <Tabs value={role} onValueChange={(value) => setRole(value as 'hr' | 'user')}>
-              <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-xl">
+              <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 dark:bg-slate-700 p-1 rounded-xl">
                 <TabsTrigger 
                   value="hr" 
-                  className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                  className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm"
                 >
                   <Users className="h-4 w-4" />
                   HR Portal
                 </TabsTrigger>
                 <TabsTrigger 
                   value="user" 
-                  className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                  className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm"
                 >
                   <FileCheck className="h-4 w-4" />
                   Candidate Portal
@@ -128,19 +140,19 @@ const Login = () => {
 
               <form onSubmit={handleLogin} className="space-y-6">
                 <div>
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                    Email Address
+                  <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {role === 'hr' ? 'Organization Email Address' : 'Email Address'}
                   </Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={role === 'hr' ? 'Enter your organization email' : 'Enter your email'}
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                       if (errors.email) setErrors({...errors, email: undefined});
                     }}
-                    className={`mt-2 h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 ${
+                    className={`mt-2 h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 ${
                       errors.email ? 'border-red-500' : ''
                     }`}
                     required
@@ -148,10 +160,15 @@ const Login = () => {
                   {errors.email && (
                     <p className="mt-1 text-sm text-red-600">{errors.email}</p>
                   )}
+                  {role === 'hr' && (
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Must use organization email domain
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Password
                   </Label>
                   <div className="relative mt-2">
@@ -164,7 +181,7 @@ const Login = () => {
                         setPassword(e.target.value);
                         if (errors.password) setErrors({...errors, password: undefined});
                       }}
-                      className={`h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 pr-12 ${
+                      className={`h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 pr-12 ${
                         errors.password ? 'border-red-500' : ''
                       }`}
                       required
@@ -194,7 +211,7 @@ const Login = () => {
                       type="checkbox"
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                       Remember me
                     </label>
                   </div>
@@ -220,9 +237,9 @@ const Login = () => {
               </form>
 
               {/* Demo credentials */}
-              <div className="mt-8 p-4 bg-gray-50 rounded-xl border">
-                <p className="text-sm font-medium text-gray-700 mb-3">Demo Credentials:</p>
-                <div className="text-xs text-gray-600 space-y-2">
+              <div className="mt-8 p-4 bg-gray-50 dark:bg-slate-700 rounded-xl border dark:border-slate-600">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Demo Credentials:</p>
+                <div className="text-xs text-gray-600 dark:text-gray-400 space-y-2">
                   <div className="flex justify-between">
                     <span className="font-medium">HR Portal:</span>
                     <span>hr@company.com / password</span>
@@ -236,7 +253,7 @@ const Login = () => {
 
               {/* Sign up link */}
               <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Don't have an account?{' '}
                   <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">
                     Request Access
@@ -248,7 +265,7 @@ const Login = () => {
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             By signing in, you agree to our{' '}
             <a href="#" className="text-blue-600 hover:text-blue-500">Terms of Service</a> and{' '}
             <a href="#" className="text-blue-600 hover:text-blue-500">Privacy Policy</a>
