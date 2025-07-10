@@ -52,7 +52,7 @@ const UserDashboardHeader = ({ user }: UserDashboardHeaderProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
