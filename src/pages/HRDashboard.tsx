@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import AIResultPopup from '@/components/AIResultPopup';
+import SummaryStatsCards from '@/components/dashboard/SummaryStatsCards';
 
 interface Document {
   id: string;
@@ -175,7 +175,6 @@ const HRDashboard = () => {
   };
 
   const handleUploadDocument = () => {
-    // In a real implementation, this would integrate with Google Drive API
     toast({
       title: 'Upload Feature',
       description: 'This will integrate with Google Drive API for document upload.',
@@ -188,13 +187,11 @@ const HRDashboard = () => {
   };
 
   const handleVerifyDocument = async (docId: string) => {
-    // In a real implementation, this would call the Flask API
     toast({
       title: 'Document Verification',
       description: 'Sending document to AI verification service...',
     });
     
-    // Simulate API call
     setTimeout(() => {
       setDocuments(prev => prev.map(doc => 
         doc.id === docId 
@@ -209,6 +206,29 @@ const HRDashboard = () => {
     }, 2000);
   };
 
+  const handleStatsCardClick = (cardType: 'total' | 'verified' | 'pending' | 'requests') => {
+    switch (cardType) {
+      case 'total':
+        setStatusFilter('all');
+        setSearchTerm('');
+        break;
+      case 'verified':
+        setStatusFilter('verified');
+        setSearchTerm('');
+        break;
+      case 'pending':
+        setStatusFilter('pending');
+        setSearchTerm('');
+        break;
+      case 'requests':
+        toast({
+          title: 'Navigate to Requests',
+          description: 'This would navigate to the requests section.',
+        });
+        break;
+    }
+  };
+
   const filteredDocuments = documents.filter(document => {
     const matchesSearch = document.candidateId.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          document.documentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -221,7 +241,6 @@ const HRDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      {/* Header */}
       <header className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
@@ -249,72 +268,14 @@ const HRDashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Documents</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{documents.length}</p>
-                </div>
-                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
-                  <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Verified</p>
-                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
-                    {documents.filter(d => d.status === 'verified').length}
-                  </p>
-                </div>
-                <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
-                  <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Pending Review</p>
-                  <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">
-                    {documents.filter(d => d.status === 'pending').length}
-                  </p>
-                </div>
-                <div className="bg-amber-100 dark:bg-amber-900 p-3 rounded-lg">
-                  <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm hover:shadow-md transition-shadow rounded-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Active Requests</p>
-                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                    {requests.filter(r => r.status === 'open').length}
-                  </p>
-                </div>
-                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
-                  <Send className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <SummaryStatsCards
+          totalDocuments={documents.length}
+          verifiedDocuments={documents.filter(d => d.status === 'verified').length}
+          pendingDocuments={documents.filter(d => d.status === 'pending').length}
+          activeRequests={requests.filter(r => r.status === 'open').length}
+          onCardClick={handleStatsCardClick}
+        />
 
-        {/* Main Documents Table */}
         <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl mb-8">
           <CardHeader className="pb-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -330,7 +291,6 @@ const HRDashboard = () => {
               </Button>
             </div>
             
-            {/* Search and Filter */}
             <div className="flex flex-col sm:flex-row gap-3 mt-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -423,7 +383,6 @@ const HRDashboard = () => {
         </Card>
       </div>
 
-      {/* AI Results Popup */}
       {selectedDocument && (
         <AIResultPopup
           isOpen={showAIPopup}
@@ -435,7 +394,6 @@ const HRDashboard = () => {
           status={selectedDocument.status}
           confidenceScore={selectedDocument.confidenceScore}
           extractedInfo={{
-            candidateId: selectedDocument.candidateId,
             documentId: selectedDocument.documentId,
             fileType: selectedDocument.fileType,
             uploadDate: selectedDocument.uploadDate
