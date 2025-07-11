@@ -1,79 +1,108 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, Shield, FileText } from 'lucide-react';
+import { Upload, Shield, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DigiLockerModal from '@/components/DigiLockerModal';
+import { useToast } from '@/hooks/use-toast';
 
 interface QuickActionsCardProps {
   digilockerConnected: boolean;
+  onDigiLockerConnect?: () => void;
 }
 
-const QuickActionsCard = ({ digilockerConnected }: QuickActionsCardProps) => {
+const QuickActionsCard = ({ digilockerConnected, onDigiLockerConnect }: QuickActionsCardProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [showDigiLockerModal, setShowDigiLockerModal] = useState(false);
 
-  const handleUploadDocument = () => {
-    navigate('/upload');
-  };
+  const handleDigiLockerConnect = (abcId: string) => {
+    console.log('Connecting with ABC ID:', abcId);
+    
+    // Simulate storing the connection
+    localStorage.setItem('digilocker_connected', 'true');
+    localStorage.setItem('digilocker_abc_id', abcId);
+    
+    // Add some mock documents from DigiLocker
+    const mockDigiLockerDocs = [
+      {
+        id: 'DL001',
+        documentId: 'AADHAAR001',
+        fileName: 'aadhaar_card.xml',
+        fileType: 'identity',
+        status: 'verified' as const,
+        confidenceScore: 100,
+        uploadDate: new Date().toISOString().split('T')[0],
+        source: 'digilocker' as const,
+        hrNotes: 'Auto-verified through DigiLocker'
+      },
+      {
+        id: 'DL002',
+        documentId: 'PAN001',
+        fileName: 'pan_card.xml',
+        fileType: 'identity',
+        status: 'verified' as const,
+        confidenceScore: 100,
+        uploadDate: new Date().toISOString().split('T')[0],
+        source: 'digilocker' as const,
+        hrNotes: 'Auto-verified through DigiLocker'
+      }
+    ];
 
-  const handleConnectDigiLocker = () => {
-    navigate('/digilocker');
+    // Store mock documents
+    const existingDocs = JSON.parse(localStorage.getItem('user_documents') || '[]');
+    localStorage.setItem('user_documents', JSON.stringify([...existingDocs, ...mockDigiLockerDocs]));
+    
+    if (onDigiLockerConnect) {
+      onDigiLockerConnect();
+    }
   };
 
   return (
-    <Card className="bg-white border-0 shadow-sm rounded-xl mb-8">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold text-gray-900">Quick Actions</CardTitle>
-        <CardDescription className="text-gray-500">Manage your documents and verification status</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Button 
-            onClick={handleUploadDocument} 
-            className="bg-blue-600 hover:bg-blue-700 rounded-xl h-auto p-6 flex-col space-y-3 transition-all hover:scale-105"
-          >
-            <div className="bg-white/20 p-3 rounded-lg">
-              <Upload className="h-8 w-8" />
-            </div>
-            <div className="text-center">
-              <div className="font-semibold">Upload Document</div>
-              <div className="text-sm opacity-90">Add certificates or resume</div>
-            </div>
-          </Button>
-          
-          <Button 
-            onClick={handleConnectDigiLocker} 
-            variant={digilockerConnected ? "secondary" : "outline"}
-            className="rounded-xl h-auto p-6 flex-col space-y-3 transition-all hover:scale-105 border-2"
-          >
-            <div className={`p-3 rounded-lg ${digilockerConnected ? 'bg-green-100' : 'bg-blue-100'}`}>
-              <Shield className={`h-8 w-8 ${digilockerConnected ? 'text-green-600' : 'text-blue-600'}`} />
-            </div>
-            <div className="text-center">
-              <div className="font-semibold">
-                {digilockerConnected ? 'DigiLocker Connected' : 'Connect DigiLocker'}
+    <>
+      <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl mb-8">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Quick Actions</CardTitle>
+          <CardDescription className="text-gray-500 dark:text-gray-400">
+            Upload documents or connect your DigiLocker for instant verification
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button 
+              onClick={() => navigate('/upload')}
+              className="flex items-center justify-center space-x-2 h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            >
+              <Upload className="h-5 w-5" />
+              <span className="font-medium">Upload Documents</span>
+            </Button>
+            
+            {digilockerConnected ? (
+              <div className="flex items-center justify-center space-x-2 h-16 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <span className="font-medium text-green-700 dark:text-green-300">DigiLocker Connected</span>
               </div>
-              <div className="text-sm opacity-75">
-                {digilockerConnected ? 'Manage connection' : 'Verify official documents'}
-              </div>
-            </div>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="rounded-xl h-auto p-6 flex-col space-y-3 transition-all hover:scale-105 border-2"
-          >
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <FileText className="h-8 w-8 text-gray-600" />
-            </div>
-            <div className="text-center">
-              <div className="font-semibold">View Reports</div>
-              <div className="text-sm opacity-75">Download verification reports</div>
-            </div>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+            ) : (
+              <Button 
+                onClick={() => setShowDigiLockerModal(true)}
+                variant="outline"
+                className="flex items-center justify-center space-x-2 h-16 border-purple-200 hover:border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:hover:border-purple-600 dark:hover:bg-purple-900/20 rounded-lg"
+              >
+                <Shield className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <span className="font-medium text-purple-700 dark:text-purple-300">Connect DigiLocker</span>
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <DigiLockerModal
+        isOpen={showDigiLockerModal}
+        onClose={() => setShowDigiLockerModal(false)}
+        onConnect={handleDigiLockerConnect}
+      />
+    </>
   );
 };
 

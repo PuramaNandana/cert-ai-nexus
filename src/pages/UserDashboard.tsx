@@ -6,6 +6,7 @@ import UserStatsOverview from '@/components/dashboard/UserStatsOverview';
 import QuickActionsCard from '@/components/dashboard/QuickActionsCard';
 import UserDocumentsList from '@/components/dashboard/UserDocumentsList';
 import DocumentRequestsList from '@/components/dashboard/DocumentRequestsList';
+import DocumentTabs from '@/components/dashboard/DocumentTabs';
 
 interface UserDocument {
   id: string;
@@ -50,23 +51,34 @@ const UserDashboard = () => {
     }
     
     setUser(parsedUser);
-    loadMockData();
+    loadUserData();
     
     const digilockerStatus = localStorage.getItem('digilocker_connected') === 'true';
     setDigilockerConnected(digilockerStatus);
   }, [navigate]);
 
+  const loadUserData = () => {
+    // Load user documents from localStorage (in real app, this would be from API)
+    const storedDocs = localStorage.getItem('user_documents');
+    if (storedDocs) {
+      setDocuments(JSON.parse(storedDocs));
+    } else {
+      // Load mock data if no stored documents
+      loadMockData();
+    }
+  };
+
   const loadMockData = () => {
-    setDocuments([
+    const mockDocuments = [
       {
         id: 'DOC001',
         documentId: 'RES001',
         fileName: 'my_resume.pdf',
         fileType: 'resume',
-        status: 'verified',
+        status: 'verified' as const,
         confidenceScore: 94,
         uploadDate: '2024-01-15',
-        source: 'manual',
+        source: 'manual' as const,
         hrNotes: 'Resume verified successfully. All information matches.',
         fileUrl: 'https://drive.google.com/file/d/sample1'
       },
@@ -75,10 +87,10 @@ const UserDashboard = () => {
         documentId: 'CER001',
         fileName: 'degree_certificate.pdf',
         fileType: 'certificate',
-        status: 'pending',
+        status: 'pending' as const,
         confidenceScore: 0,
         uploadDate: '2024-01-16',
-        source: 'digilocker',
+        source: 'digilocker' as const,
         fileUrl: 'https://drive.google.com/file/d/sample2'
       },
       {
@@ -86,14 +98,17 @@ const UserDashboard = () => {
         documentId: 'EXP001',
         fileName: 'experience_letter.pdf',
         fileType: 'experience',
-        status: 'rejected',
+        status: 'rejected' as const,
         confidenceScore: 42,
         uploadDate: '2024-01-14',
-        source: 'manual',
+        source: 'manual' as const,
         hrNotes: 'Document quality insufficient. Please upload a clearer version.',
         fileUrl: 'https://drive.google.com/file/d/sample3'
       }
-    ]);
+    ];
+
+    setDocuments(mockDocuments);
+    localStorage.setItem('user_documents', JSON.stringify(mockDocuments));
 
     setRequests([
       {
@@ -115,20 +130,33 @@ const UserDashboard = () => {
     ]);
   };
 
+  const handleDigiLockerConnect = () => {
+    setDigilockerConnected(true);
+    // Reload documents to include any new DigiLocker documents
+    loadUserData();
+  };
+
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors">
       <UserDashboardHeader user={user} />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <UserStatsOverview documents={documents} digilockerConnected={digilockerConnected} />
         
-        <QuickActionsCard digilockerConnected={digilockerConnected} />
+        <QuickActionsCard 
+          digilockerConnected={digilockerConnected} 
+          onDigiLockerConnect={handleDigiLockerConnect}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <UserDocumentsList documents={documents} />
+            <DocumentTabs documents={documents}>
+              {(filteredDocuments, activeTab) => (
+                <UserDocumentsList documents={filteredDocuments} />
+              )}
+            </DocumentTabs>
           </div>
 
           <div className="lg:col-span-1">

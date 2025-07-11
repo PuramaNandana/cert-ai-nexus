@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface UserDashboardHeaderProps {
   user: {
@@ -41,11 +42,12 @@ const UserDashboardHeader = ({ user }: UserDashboardHeaderProps) => {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <div className="text-right">
               <p className="text-sm font-medium text-gray-900 dark:text-white">Welcome back,</p>
               <p className="text-sm text-gray-500 dark:text-gray-400 font-mono">{user.id}</p>
             </div>
-            <Button onClick={handleLogout} variant="outline" className="rounded-lg border-gray-300 hover:border-gray-400">
+            <Button onClick={handleLogout} variant="outline" className="rounded-lg border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500">
               <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>
