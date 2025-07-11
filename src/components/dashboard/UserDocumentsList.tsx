@@ -3,7 +3,8 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { FileText, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileText, CheckCircle2, Clock, XCircle, Filter } from 'lucide-react';
 
 interface UserDocument {
   id: string;
@@ -18,9 +19,11 @@ interface UserDocument {
 
 interface UserDocumentsListProps {
   documents: UserDocument[];
+  activeFilter: 'all' | 'verified' | 'pending' | 'digilocker';
+  onFilterChange: (filter: 'all' | 'verified' | 'pending' | 'digilocker') => void;
 }
 
-const UserDocumentsList = ({ documents }: UserDocumentsListProps) => {
+const UserDocumentsList = ({ documents, activeFilter, onFilterChange }: UserDocumentsListProps) => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
@@ -49,14 +52,66 @@ const UserDocumentsList = ({ documents }: UserDocumentsListProps) => {
     }
   };
 
+  const getFilterTitle = () => {
+    switch (activeFilter) {
+      case 'verified':
+        return 'Verified Documents';
+      case 'pending':
+        return 'Pending Documents';
+      case 'digilocker':
+        return 'DigiLocker Documents';
+      default:
+        return 'My Documents';
+    }
+  };
+
+  const getFilterDescription = () => {
+    switch (activeFilter) {
+      case 'verified':
+        return 'Documents that have been verified and approved';
+      case 'pending':
+        return 'Documents awaiting verification';
+      case 'digilocker':
+        return 'Documents imported from DigiLocker';
+      default:
+        return 'All your uploaded documents';
+    }
+  };
+
   if (documents.length === 0) {
     return (
       <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                <Filter className="h-5 w-5 mr-2" />
+                {getFilterTitle()}
+              </CardTitle>
+              <CardDescription className="text-gray-500 dark:text-gray-400">
+                {getFilterDescription()}
+              </CardDescription>
+            </div>
+            {activeFilter !== 'all' && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onFilterChange('all')}
+                className="text-xs"
+              >
+                Clear Filter
+              </Button>
+            )}
+          </div>
+        </CardHeader>
         <CardContent className="p-12 text-center">
           <FileText className="h-12 w-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No documents found</h3>
           <p className="text-gray-500 dark:text-gray-400">
-            No documents match the current filter. Try switching to a different tab or upload some documents.
+            {activeFilter === 'all' 
+              ? 'No documents have been uploaded yet. Use the quick actions above to get started.'
+              : `No documents match the ${activeFilter} filter. Try clearing the filter or uploading documents.`
+            }
           </p>
         </CardContent>
       </Card>
@@ -66,8 +121,27 @@ const UserDocumentsList = ({ documents }: UserDocumentsListProps) => {
   return (
     <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">My Documents</CardTitle>
-        <CardDescription className="text-gray-500 dark:text-gray-400">Track your document verification status</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+              <Filter className="h-5 w-5 mr-2" />
+              {getFilterTitle()}
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              {getFilterDescription()} ({documents.length} {documents.length === 1 ? 'document' : 'documents'})
+            </CardDescription>
+          </div>
+          {activeFilter !== 'all' && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onFilterChange('all')}
+              className="text-xs"
+            >
+              Clear Filter
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="px-0">
         <div className="space-y-1">

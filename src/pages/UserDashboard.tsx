@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserDashboardHeader from '@/components/dashboard/UserDashboardHeader';
-import UserStatsOverview from '@/components/dashboard/UserStatsOverview';
+import SummaryStatsCards from '@/components/dashboard/SummaryStatsCards';
 import QuickActionsCard from '@/components/dashboard/QuickActionsCard';
 import UserDocumentsList from '@/components/dashboard/UserDocumentsList';
 import DocumentRequestsList from '@/components/dashboard/DocumentRequestsList';
-import DocumentTabs from '@/components/dashboard/DocumentTabs';
 
 interface UserDocument {
   id: string;
@@ -30,12 +29,15 @@ interface PendingRequest {
   dueDate: string;
 }
 
+type FilterType = 'all' | 'verified' | 'pending' | 'digilocker';
+
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [documents, setDocuments] = useState<UserDocument[]>([]);
   const [requests, setRequests] = useState<PendingRequest[]>([]);
   const [user, setUser] = useState<any>(null);
   const [digilockerConnected, setDigilockerConnected] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -114,18 +116,18 @@ const UserDashboard = () => {
       {
         id: 'REQ001',
         hrId: 'HR5M8K9L',
-        docType: 'Experience Certificate',
-        notes: 'Please provide your previous employment certificate from ABC Corp',
-        requestDate: '2024-01-16',
-        dueDate: '2024-01-20'
+        docType: 'Degree Certificate',
+        notes: 'Please provide your degree certificate from university',
+        requestDate: '2025-07-10',
+        dueDate: '2025-07-15'
       },
       {
         id: 'REQ002',
         hrId: 'HR2B7N4P',
-        docType: 'Skill Certification',
-        notes: 'AWS certification or similar cloud platform certification required',
-        requestDate: '2024-01-15',
-        dueDate: '2024-01-22'
+        docType: 'Internship Certificate',
+        notes: 'Internship certificate from previous company required',
+        requestDate: '2025-07-09',
+        dueDate: '2025-07-18'
       }
     ]);
   };
@@ -136,6 +138,40 @@ const UserDashboard = () => {
     loadUserData();
   };
 
+  const handleCardClick = (cardType: 'total' | 'verified' | 'pending' | 'requests') => {
+    switch (cardType) {
+      case 'total':
+        setActiveFilter('all');
+        break;
+      case 'verified':
+        setActiveFilter('verified');
+        break;
+      case 'pending':
+        setActiveFilter('pending');
+        break;
+      case 'requests':
+        // Scroll to document requests section
+        const requestsElement = document.getElementById('document-requests');
+        if (requestsElement) {
+          requestsElement.scrollIntoView({ behavior: 'smooth' });
+        }
+        break;
+    }
+  };
+
+  const getFilteredDocuments = () => {
+    switch (activeFilter) {
+      case 'verified':
+        return documents.filter(doc => doc.status === 'verified');
+      case 'pending':
+        return documents.filter(doc => doc.status === 'pending');
+      case 'digilocker':
+        return documents.filter(doc => doc.source === 'digilocker');
+      default:
+        return documents;
+    }
+  };
+
   if (!user) return null;
 
   return (
@@ -143,7 +179,13 @@ const UserDashboard = () => {
       <UserDashboardHeader user={user} />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <UserStatsOverview documents={documents} digilockerConnected={digilockerConnected} />
+        <SummaryStatsCards 
+          totalDocuments={documents.length}
+          verifiedDocuments={documents.filter(d => d.status === 'verified').length}
+          pendingDocuments={documents.filter(d => d.status === 'pending').length}
+          activeRequests={requests.length}
+          onCardClick={handleCardClick}
+        />
         
         <QuickActionsCard 
           digilockerConnected={digilockerConnected} 
@@ -152,11 +194,11 @@ const UserDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <DocumentTabs documents={documents}>
-              {(filteredDocuments, activeTab) => (
-                <UserDocumentsList documents={filteredDocuments} />
-              )}
-            </DocumentTabs>
+            <UserDocumentsList 
+              documents={getFilteredDocuments()} 
+              activeFilter={activeFilter}
+              onFilterChange={setActiveFilter}
+            />
           </div>
 
           <div className="lg:col-span-1">
