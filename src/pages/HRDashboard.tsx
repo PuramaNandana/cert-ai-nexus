@@ -394,9 +394,10 @@ const HRDashboard = () => {
           status={selectedDocument.status}
           confidenceScore={selectedDocument.confidenceScore}
           extractedInfo={{
-            documentId: selectedDocument.documentId,
-            fileType: selectedDocument.fileType,
-            uploadDate: selectedDocument.uploadDate
+            name: selectedDocument.fileType === 'resume' ? 'John Doe' : undefined,
+            degree: selectedDocument.fileType === 'certificate' ? 'Bachelor of Science' : undefined,
+            institution: selectedDocument.fileType === 'certificate' ? 'MIT' : undefined,
+            year: selectedDocument.fileType === 'certificate' ? '2020' : undefined
           }}
           onApprove={() => {
             toast({
