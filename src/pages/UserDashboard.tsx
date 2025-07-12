@@ -124,10 +124,18 @@ const UserDashboard = () => {
       {
         id: 'REQ002',
         hrId: 'HR2B7N4P',
-        docType: 'Internship Certificate',
+        docType: 'Internship Letter',
         notes: 'Internship certificate from previous company required',
         requestDate: '2025-07-09',
         dueDate: '2025-07-18'
+      },
+      {
+        id: 'REQ003',
+        hrId: 'HR8X3Y7Z',
+        docType: '10th Marks Memo',
+        notes: 'Please upload your 10th standard marks memorandum',
+        requestDate: '2025-07-08',
+        dueDate: '2025-07-20'
       }
     ]);
   };

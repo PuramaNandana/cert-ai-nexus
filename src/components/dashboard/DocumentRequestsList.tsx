@@ -57,7 +57,7 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
           Document Requests
         </CardTitle>
         <CardDescription className="text-gray-500 dark:text-gray-400">
-          HR has requested these documents ({requests.length} pending)
+          HR has requested these documents
         </CardDescription>
       </CardHeader>
       <CardContent>
