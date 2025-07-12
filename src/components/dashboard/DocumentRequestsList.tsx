@@ -65,40 +65,41 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
       <CardContent className="pt-0">
         <div className="space-y-3">
           {hardcodedRequests.map((request) => (
-            <div 
-              key={request.id} 
-              className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-700/30 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700/50 transition-colors"
-            >
-              <div className="flex items-center flex-1 min-w-0">
-                <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">
-                    {request.docType}
-                  </h4>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 text-xs font-normal px-2 py-0.5">
-                      Status: Pending
-                    </Badge>
-                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
-                      <Clock className="h-3 w-3 mr-1" />
-                      Due: {request.dueDate}
+            <Card key={request.id} className="bg-gray-50 dark:bg-slate-700/20 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center flex-1 min-w-0">
+                    <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-2">
+                        {request.docType}
+                      </h4>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 text-xs font-normal px-2 py-0.5">
+                          Status: Pending
+                        </Badge>
+                        <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                          <Clock className="h-3 w-3 mr-1 flex-shrink-0" />
+                          Due: {request.dueDate}
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  
+                  <div className="ml-4 flex-shrink-0">
+                    <Button 
+                      onClick={() => handleRespondToRequest(request.id, request.docType)}
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium px-3 py-1.5 h-8 text-xs min-w-[80px]"
+                      aria-label={`Upload ${request.docType} document`}
+                    >
+                      <Upload className="h-3 w-3 mr-1.5 flex-shrink-0" />
+                      Upload
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="ml-4 flex-shrink-0">
-                <Button 
-                  onClick={() => handleRespondToRequest(request.id, request.docType)}
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium px-3 py-1.5 h-8 text-xs"
-                  aria-label={`Upload ${request.docType} document`}
-                >
-                  <Upload className="h-3 w-3 mr-1.5" />
-                  Upload
-                </Button>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </CardContent>
