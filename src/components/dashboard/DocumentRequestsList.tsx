@@ -24,21 +24,31 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Hardcoded document requests as specified
+  const hardcodedRequests = [
+    {
+      id: 'REQ001',
+      docType: 'Degree Certificate',
+      dueDate: '15 July 2025'
+    },
+    {
+      id: 'REQ002', 
+      docType: 'Internship Letter',
+      dueDate: '18 July 2025'
+    },
+    {
+      id: 'REQ003',
+      docType: '10th Marks Memo', 
+      dueDate: '20 July 2025'
+    }
+  ];
+
   const handleRespondToRequest = (requestId: string, docType: string) => {
     toast({
       title: 'Redirecting to Upload',
       description: `Upload your ${docType} to fulfill this request.`,
     });
     navigate('/upload');
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
-    });
   };
 
   return (
@@ -49,12 +59,12 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
           Document Requests
         </CardTitle>
         <CardDescription className="text-gray-500 dark:text-gray-400">
-          HR has requested these documents
+          HR has requested the following documents.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {requests.map((request) => (
+          {hardcodedRequests.map((request) => (
             <div 
               key={request.id} 
               className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-slate-700/50 hover:bg-gray-100 dark:hover:bg-slate-700/70 transition-colors"
@@ -68,11 +78,11 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                     </h4>
                     <div className="flex items-center gap-3 text-xs">
                       <Badge className="bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900 dark:text-orange-300 rounded-full">
-                        ⚠️ Status: Pending
+                        Status: Pending
                       </Badge>
                       <div className="flex items-center text-gray-600 dark:text-gray-400">
                         <Clock className="h-3 w-3 mr-1" />
-                        Due: {formatDate(request.dueDate)}
+                        Due: {request.dueDate}
                       </div>
                     </div>
                   </div>
