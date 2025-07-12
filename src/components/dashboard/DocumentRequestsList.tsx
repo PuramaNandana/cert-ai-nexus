@@ -53,47 +53,48 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
 
   return (
     <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl" id="document-requests">
-      <CardHeader>
-        <CardTitle className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-          <FileText className="h-5 w-5 mr-2" />
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+          <FileText className="h-5 w-5 mr-2 text-gray-600 dark:text-gray-400" />
           Document Requests
         </CardTitle>
-        <CardDescription className="text-gray-500 dark:text-gray-400">
+        <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
           HR has requested the following documents.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="pt-0">
+        <div className="space-y-3">
           {hardcodedRequests.map((request) => (
             <div 
               key={request.id} 
-              className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-slate-700/50 hover:bg-gray-100 dark:hover:bg-slate-700/70 transition-colors"
+              className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-700/30 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700/50 transition-colors"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center flex-1">
-                  <FileText className="h-5 w-5 text-gray-600 dark:text-gray-400 mr-3 flex-shrink-0" />
-                  <div className="flex-1">
-                    <h4 className="font-bold text-gray-900 dark:text-white text-sm mb-1">
-                      {request.docType}
-                    </h4>
-                    <div className="flex items-center gap-3 text-xs">
-                      <Badge className="bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900 dark:text-orange-300 rounded-full">
-                        Status: Pending
-                      </Badge>
-                      <div className="flex items-center text-gray-600 dark:text-gray-400">
-                        <Clock className="h-3 w-3 mr-1" />
-                        Due: {request.dueDate}
-                      </div>
+              <div className="flex items-center flex-1 min-w-0">
+                <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">
+                    {request.docType}
+                  </h4>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 text-xs font-normal px-2 py-0.5">
+                      Status: Pending
+                    </Badge>
+                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                      <Clock className="h-3 w-3 mr-1" />
+                      Due: {request.dueDate}
                     </div>
                   </div>
                 </div>
+              </div>
+              
+              <div className="ml-4 flex-shrink-0">
                 <Button 
                   onClick={() => handleRespondToRequest(request.id, request.docType)}
                   size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center ml-4"
+                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium px-3 py-1.5 h-8 text-xs"
                   aria-label={`Upload ${request.docType} document`}
                 >
-                  <Upload className="h-4 w-4 mr-1" />
+                  <Upload className="h-3 w-3 mr-1.5" />
                   Upload
                 </Button>
               </div>
