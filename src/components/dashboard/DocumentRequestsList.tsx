@@ -24,22 +24,34 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Hardcoded document requests as specified
+  // Hardcoded document requests with unique orange-toned styling
   const hardcodedRequests = [
     {
       id: 'REQ001',
       docType: 'Degree Certificate',
-      dueDate: '15 July 2025'
+      dueDate: '15 July 2025',
+      bgClass: 'bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20',
+      borderClass: 'border-orange-200 dark:border-orange-800/40',
+      iconBg: 'bg-orange-100 dark:bg-orange-900/40',
+      iconColor: 'text-orange-600 dark:text-orange-400'
     },
     {
       id: 'REQ002', 
       docType: 'Internship Letter',
-      dueDate: '18 July 2025'
+      dueDate: '18 July 2025',
+      bgClass: 'bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20',
+      borderClass: 'border-amber-200 dark:border-amber-800/40',
+      iconBg: 'bg-amber-100 dark:bg-amber-900/40',
+      iconColor: 'text-amber-600 dark:text-amber-400'
     },
     {
       id: 'REQ003',
       docType: '10th Marks Memo', 
-      dueDate: '20 July 2025'
+      dueDate: '20 July 2025',
+      bgClass: 'bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20',
+      borderClass: 'border-yellow-200 dark:border-yellow-800/40',
+      iconBg: 'bg-yellow-100 dark:bg-yellow-900/40',
+      iconColor: 'text-yellow-600 dark:text-yellow-400'
     }
   ];
 
@@ -65,12 +77,12 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
       <CardContent className="pt-0 pb-6">
         <div className="space-y-4">
           {hardcodedRequests.map((request) => (
-            <Card key={request.id} className="bg-gray-50 dark:bg-slate-700/30 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200 rounded-lg">
+            <Card key={request.id} className={`${request.bgClass} border ${request.borderClass} shadow-sm hover:shadow-md transition-all duration-200 rounded-lg`}>
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-start flex-1 min-w-0">
-                    <div className="bg-blue-50 dark:bg-blue-900/30 p-2.5 rounded-lg mr-4 flex-shrink-0">
-                      <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <div className={`${request.iconBg} p-2.5 rounded-lg mr-4 flex-shrink-0`}>
+                      <FileText className={`h-5 w-5 ${request.iconColor}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-gray-900 dark:text-white text-lg mb-3 leading-tight">
