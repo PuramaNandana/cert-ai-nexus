@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Clock, Upload } from 'lucide-react';
+import { FileText, Clock, Upload, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,34 +24,40 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Hardcoded document requests with unique orange-toned styling
+  // Modern document requests with elegant orange styling
   const hardcodedRequests = [
     {
       id: 'REQ001',
       docType: 'Degree Certificate',
       dueDate: '15 July 2025',
-      bgClass: 'bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20',
-      borderClass: 'border-orange-200 dark:border-orange-800/40',
-      iconBg: 'bg-orange-100 dark:bg-orange-900/40',
-      iconColor: 'text-orange-600 dark:text-orange-400'
+      priority: 'High',
+      bgGradient: 'bg-gradient-to-br from-orange-50/80 via-orange-100/60 to-amber-50/80',
+      borderColor: 'border-orange-200/60',
+      iconBg: 'bg-orange-500/10',
+      iconColor: 'text-orange-600',
+      accentColor: 'bg-orange-500'
     },
     {
       id: 'REQ002', 
       docType: 'Internship Letter',
       dueDate: '18 July 2025',
-      bgClass: 'bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20',
-      borderClass: 'border-amber-200 dark:border-amber-800/40',
-      iconBg: 'bg-amber-100 dark:bg-amber-900/40',
-      iconColor: 'text-amber-600 dark:text-amber-400'
+      priority: 'Medium',
+      bgGradient: 'bg-gradient-to-br from-amber-50/80 via-amber-100/60 to-yellow-50/80',
+      borderColor: 'border-amber-200/60',
+      iconBg: 'bg-amber-500/10',
+      iconColor: 'text-amber-600',
+      accentColor: 'bg-amber-500'
     },
     {
       id: 'REQ003',
       docType: '10th Marks Memo', 
       dueDate: '20 July 2025',
-      bgClass: 'bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20',
-      borderClass: 'border-yellow-200 dark:border-yellow-800/40',
-      iconBg: 'bg-yellow-100 dark:bg-yellow-900/40',
-      iconColor: 'text-yellow-600 dark:text-yellow-400'
+      priority: 'Low',
+      bgGradient: 'bg-gradient-to-br from-yellow-50/80 via-yellow-100/60 to-orange-50/80',
+      borderColor: 'border-yellow-200/60',
+      iconBg: 'bg-yellow-500/10',
+      iconColor: 'text-yellow-600',
+      accentColor: 'bg-yellow-500'
     }
   ];
 
@@ -64,60 +70,153 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
   };
 
   return (
-    <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg rounded-xl" id="document-requests">
-      <CardHeader className="pb-6">
-        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-          <FileText className="h-6 w-6 mr-3 text-gray-700 dark:text-gray-300" />
-          Document Requests
-        </CardTitle>
-        <CardDescription className="text-base text-gray-600 dark:text-gray-400 ml-9">
-          HR has requested the following documents.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pt-0 pb-6">
-        <div className="space-y-4">
-          {hardcodedRequests.map((request) => (
-            <Card key={request.id} className={`${request.bgClass} border ${request.borderClass} shadow-sm hover:shadow-md transition-all duration-200 rounded-lg`}>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start flex-1 min-w-0">
-                    <div className={`${request.iconBg} p-2.5 rounded-lg mr-4 flex-shrink-0`}>
-                      <FileText className={`h-5 w-5 ${request.iconColor}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-gray-900 dark:text-white text-lg mb-3 leading-tight">
+    <div className="space-y-6" id="document-requests">
+      {/* Header Section */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-900/20">
+            <FileText className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Document Requests
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              HR has requested the following documents
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Document Cards Grid */}
+      <div className="grid gap-4">
+        {hardcodedRequests.map((request, index) => (
+          <Card 
+            key={request.id} 
+            className={`
+              ${request.bgGradient} 
+              border ${request.borderColor} 
+              shadow-sm hover:shadow-lg 
+              transition-all duration-300 
+              rounded-2xl 
+              backdrop-blur-sm
+              dark:${request.bgGradient.replace(/50\/80|100\/60/g, '950/10')}
+              dark:${request.borderColor.replace('200/60', '800/30')}
+              group
+              relative
+              overflow-hidden
+            `}
+          >
+            {/* Subtle accent line */}
+            <div className={`absolute top-0 left-0 right-0 h-1 ${request.accentColor} rounded-t-2xl`} />
+            
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between gap-6">
+                {/* Left Content */}
+                <div className="flex items-start gap-4 flex-1 min-w-0">
+                  {/* Icon */}
+                  <div className={`
+                    ${request.iconBg} 
+                    p-3 
+                    rounded-xl 
+                    flex-shrink-0 
+                    group-hover:scale-110 
+                    transition-transform 
+                    duration-200
+                    ring-1 
+                    ring-white/20
+                  `}>
+                    <FileText className={`h-6 w-6 ${request.iconColor}`} />
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 min-w-0 space-y-3">
+                    {/* Title and Priority */}
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h3 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">
                         {request.docType}
-                      </h4>
-                      <div className="flex items-center gap-4 flex-wrap">
-                        <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-300 dark:border-orange-700 text-sm font-medium px-3 py-1.5 rounded-full">
-                          Status: Pending
-                        </Badge>
-                        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                          <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
-                          <span className="font-medium">Due: {request.dueDate}</span>
-                        </div>
+                      </h3>
+                      <Badge 
+                        variant="secondary" 
+                        className="
+                          text-xs 
+                          font-medium 
+                          px-2.5 
+                          py-1 
+                          rounded-full
+                          bg-white/60 
+                          text-gray-700 
+                          border-0
+                          dark:bg-gray-800/60 
+                          dark:text-gray-300
+                        "
+                      >
+                        {request.priority} Priority
+                      </Badge>
+                    </div>
+                    
+                    {/* Status and Due Date */}
+                    <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Pending Response
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <Calendar className="h-4 w-4" />
+                        <span className="font-medium">Due {request.dueDate}</span>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="ml-6 flex-shrink-0">
-                    <Button 
-                      onClick={() => handleRespondToRequest(request.id, request.docType)}
-                      size="default"
-                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold px-6 py-3 h-auto text-sm shadow-sm hover:shadow-md transition-all duration-200 rounded-lg"
-                      aria-label={`Upload ${request.docType} document`}
-                    >
-                      <Upload className="h-4 w-4 mr-2 flex-shrink-0" />
-                      Upload
-                    </Button>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+                
+                {/* Action Button */}
+                <div className="flex-shrink-0">
+                  <Button 
+                    onClick={() => handleRespondToRequest(request.id, request.docType)}
+                    className="
+                      bg-white/90 
+                      hover:bg-white 
+                      text-gray-900 
+                      border 
+                      border-gray-200/50 
+                      shadow-sm 
+                      hover:shadow-md 
+                      font-semibold 
+                      px-6 
+                      py-2.5 
+                      h-auto 
+                      rounded-xl
+                      transition-all 
+                      duration-200
+                      backdrop-blur-sm
+                      group-hover:scale-105
+                      dark:bg-gray-800/90 
+                      dark:hover:bg-gray-800 
+                      dark:text-white 
+                      dark:border-gray-700/50
+                    "
+                    aria-label={`Upload ${request.docType} document`}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Document
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      
+      {/* Footer note */}
+      <div className="flex items-center justify-center pt-4">
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+          Click "Upload Document" to submit the requested files
+        </p>
+      </div>
+    </div>
   );
 };
 
