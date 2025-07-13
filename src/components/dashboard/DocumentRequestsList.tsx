@@ -52,48 +52,50 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
   };
 
   return (
-    <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm rounded-xl" id="document-requests">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-          <FileText className="h-5 w-5 mr-2 text-gray-600 dark:text-gray-400" />
+    <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg rounded-xl" id="document-requests">
+      <CardHeader className="pb-6">
+        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+          <FileText className="h-6 w-6 mr-3 text-gray-700 dark:text-gray-300" />
           Document Requests
         </CardTitle>
-        <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+        <CardDescription className="text-base text-gray-600 dark:text-gray-400 ml-9">
           HR has requested the following documents.
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="space-y-3">
+      <CardContent className="pt-0 pb-6">
+        <div className="space-y-4">
           {hardcodedRequests.map((request) => (
-            <Card key={request.id} className="bg-gray-50 dark:bg-slate-700/20 border border-gray-200 dark:border-gray-700 shadow-sm">
-              <CardContent className="p-4">
+            <Card key={request.id} className="bg-gray-50 dark:bg-slate-700/30 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200 rounded-lg">
+              <CardContent className="p-5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center flex-1 min-w-0">
-                    <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3 flex-shrink-0" />
+                  <div className="flex items-start flex-1 min-w-0">
+                    <div className="bg-blue-50 dark:bg-blue-900/30 p-2.5 rounded-lg mr-4 flex-shrink-0">
+                      <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-2">
+                      <h4 className="font-bold text-gray-900 dark:text-white text-lg mb-3 leading-tight">
                         {request.docType}
                       </h4>
-                      <div className="flex items-center gap-3">
-                        <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 text-xs font-normal px-2 py-0.5">
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-300 dark:border-orange-700 text-sm font-medium px-3 py-1.5 rounded-full">
                           Status: Pending
                         </Badge>
-                        <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
-                          <Clock className="h-3 w-3 mr-1 flex-shrink-0" />
-                          Due: {request.dueDate}
+                        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                          <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
+                          <span className="font-medium">Due: {request.dueDate}</span>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="ml-6 flex-shrink-0">
                     <Button 
                       onClick={() => handleRespondToRequest(request.id, request.docType)}
-                      size="sm"
-                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium px-3 py-1.5 h-8 text-xs min-w-[80px]"
+                      size="default"
+                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold px-6 py-3 h-auto text-sm shadow-sm hover:shadow-md transition-all duration-200 rounded-lg"
                       aria-label={`Upload ${request.docType} document`}
                     >
-                      <Upload className="h-3 w-3 mr-1.5 flex-shrink-0" />
+                      <Upload className="h-4 w-4 mr-2 flex-shrink-0" />
                       Upload
                     </Button>
                   </div>
