@@ -32,6 +32,31 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
     navigate('/upload');
   };
 
+  // Mock data for 3 different document requests
+  const documentRequests = [
+    {
+      id: 'REQ001',
+      docType: 'Degree Certificate',
+      dueDate: '15 July 2025',
+      status: 'Pending',
+      priority: 'high'
+    },
+    {
+      id: 'REQ002',
+      docType: 'Internship Letter',
+      dueDate: '18 July 2025',
+      status: 'Pending',
+      priority: 'medium'
+    },
+    {
+      id: 'REQ003',
+      docType: '10th Marks Memo',
+      dueDate: '20 July 2025',
+      status: 'Pending',
+      priority: 'low'
+    }
+  ];
+
   return (
     <div className="space-y-6" id="document-requests">
       {/* Header Section */}
@@ -51,106 +76,109 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
         </div>
       </div>
 
-      {/* Single Modern Document Request Card */}
-      <Card className="
-        relative 
-        bg-orange-50 
-        dark:bg-gray-800 
-        border-0 
-        rounded-2xl 
-        shadow-sm 
-        hover:shadow-md 
-        transition-shadow 
-        duration-200 
-        mb-4
-        overflow-hidden
-      ">
-        {/* Top Orange Border Strip */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-orange-600" />
-        
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between gap-6">
-            {/* Left Section */}
-            <div className="flex items-center gap-4 flex-1">
-              {/* Document Icon */}
-              <div className="
-                p-3 
-                rounded-xl 
-                bg-orange-100 
-                dark:bg-amber-900/30 
-                flex-shrink-0
-                border 
-                border-orange-200/50 
-                dark:border-amber-800/50
-              ">
-                <FileText className="h-6 w-6 text-orange-600 dark:text-amber-400" />
-              </div>
-              
-              {/* Content */}
-              <div className="flex-1 space-y-2">
-                {/* Title */}
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                  Degree Certificate
-                </h3>
-                
-                {/* Status and Due Date Row */}
-                <div className="flex items-center gap-4">
-                  {/* Status Badge */}
-                  <Badge className="
+      {/* Stacked Document Request Cards */}
+      <div className="space-y-4">
+        {documentRequests.map((request, index) => (
+          <Card key={request.id} className="
+            relative 
+            bg-orange-50 
+            dark:bg-gray-800 
+            border-0 
+            rounded-2xl 
+            shadow-sm 
+            hover:shadow-md 
+            transition-shadow 
+            duration-200
+            overflow-hidden
+          ">
+            {/* Top Orange Border Strip */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-orange-600" />
+            
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between gap-6">
+                {/* Left Section */}
+                <div className="flex items-center gap-4 flex-1">
+                  {/* Document Icon */}
+                  <div className="
+                    p-3 
+                    rounded-xl 
                     bg-orange-100 
-                    text-orange-800 
-                    hover:bg-orange-100 
-                    dark:bg-amber-900/40 
-                    dark:text-amber-200 
-                    border-0 
-                    font-semibold 
-                    text-xs 
-                    px-2.5 
-                    py-1 
-                    rounded-full
+                    dark:bg-amber-900/30 
+                    flex-shrink-0
+                    border 
+                    border-orange-200/50 
+                    dark:border-amber-800/50
                   ">
-                    Pending
-                  </Badge>
+                    <FileText className="h-6 w-6 text-orange-600 dark:text-amber-400" />
+                  </div>
                   
-                  {/* Due Date */}
-                  <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
-                    <Calendar className="h-4 w-4" />
-                    <span className="font-medium">Due: 15 July 2025</span>
+                  {/* Content */}
+                  <div className="flex-1 space-y-2">
+                    {/* Title */}
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                      {request.docType}
+                    </h3>
+                    
+                    {/* Status and Due Date Row */}
+                    <div className="flex items-center gap-4">
+                      {/* Status Badge */}
+                      <Badge className="
+                        bg-orange-100 
+                        text-orange-800 
+                        hover:bg-orange-100 
+                        dark:bg-amber-900/40 
+                        dark:text-amber-200 
+                        border-0 
+                        font-semibold 
+                        text-xs 
+                        px-2.5 
+                        py-1 
+                        rounded-full
+                      ">
+                        {request.status}
+                      </Badge>
+                      
+                      {/* Due Date */}
+                      <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
+                        <Calendar className="h-4 w-4" />
+                        <span className="font-medium">Due: {request.dueDate}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                
+                {/* Right Section - Upload Button */}
+                <div className="flex-shrink-0">
+                  <Button 
+                    onClick={() => handleRespondToRequest(request.id, request.docType)}
+                    className="
+                      bg-blue-600 
+                      hover:bg-blue-700 
+                      text-white 
+                      font-semibold 
+                      px-6 
+                      py-2.5 
+                      h-auto 
+                      rounded-xl 
+                      shadow-sm 
+                      hover:shadow-md 
+                      transition-all 
+                      duration-200
+                      border-0
+                      dark:bg-blue-600 
+                      dark:hover:bg-blue-700
+                    "
+                    aria-label={`Upload ${request.docType} document`}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Document
+                  </Button>
+                </div>
               </div>
-            </div>
-            
-            {/* Right Section - Upload Button */}
-            <div className="flex-shrink-0">
-              <Button 
-                onClick={() => handleRespondToRequest('REQ001', 'Degree Certificate')}
-                className="
-                  bg-blue-600 
-                  hover:bg-blue-700 
-                  text-white 
-                  font-semibold 
-                  px-6 
-                  py-2.5 
-                  h-auto 
-                  rounded-xl 
-                  shadow-sm 
-                  hover:shadow-md 
-                  transition-all 
-                  duration-200
-                  border-0
-                  dark:bg-blue-600 
-                  dark:hover:bg-blue-700
-                "
-                aria-label="Upload Degree Certificate document"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                Upload Document
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
       
       {/* Footer note */}
       <div className="flex items-center justify-center pt-2">
