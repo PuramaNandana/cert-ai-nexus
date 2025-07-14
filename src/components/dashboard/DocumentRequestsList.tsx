@@ -32,7 +32,7 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
     navigate('/upload');
   };
 
-  // Mock data for 3 different document requests
+  // Document requests data exactly as specified
   const documentRequests = [
     {
       id: 'REQ001',
@@ -77,11 +77,11 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
       </div>
 
       {/* Document Request Cards */}
-      <div className="space-y-4">
+      <div className="space-y-5">
         {documentRequests.map((request, index) => (
           <Card key={request.id} className="
             relative 
-            bg-orange-50/80
+            bg-orange-50
             dark:bg-gray-800 
             border-0 
             rounded-xl
@@ -95,9 +95,11 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
             <div className="absolute top-0 left-0 right-0 h-[5px] bg-[#E65100]" />
             
             <CardContent className="p-5">
+              {/* Two Column Layout */}
               <div className="flex items-center justify-between gap-6">
-                {/* Left Section - Icon */}
-                <div className="flex-shrink-0">
+                {/* Left Column - Info Section */}
+                <div className="flex items-center gap-4 flex-1">
+                  {/* Icon in rounded square */}
                   <div className="
                     w-8 
                     h-8 
@@ -107,44 +109,47 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                     flex 
                     items-center 
                     justify-center
+                    flex-shrink-0
                   ">
                     <FileText className="h-4 w-4 text-orange-600 dark:text-amber-400" />
                   </div>
-                </div>
-                
-                {/* Middle Section - Content */}
-                <div className="flex-1 space-y-2">
-                  {/* Document Title */}
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                    {request.docType}
-                  </h3>
                   
-                  {/* Status and Due Date in Single Line */}
-                  <div className="flex items-center gap-4">
-                    <Badge className="
-                      bg-[#FFE9D5] 
-                      text-[#B45309] 
-                      hover:bg-[#FFE9D5] 
-                      dark:bg-amber-900/40 
-                      dark:text-amber-200 
-                      border-0 
-                      font-medium 
-                      text-xs 
-                      px-3 
-                      py-1 
-                      rounded-full
-                    ">
-                      {request.status}
-                    </Badge>
+                  {/* Content Section */}
+                  <div className="space-y-2 flex-1">
+                    {/* Document Title - Bold, 18px */}
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                      {request.docType}
+                    </h3>
                     
-                    <div className="flex items-center gap-1.5 text-sm text-[#4B5563] dark:text-gray-400">
-                      <Calendar className="h-4 w-4" />
-                      <span className="font-normal">Due: {request.dueDate}</span>
+                    {/* Status and Due Date in Single Inline Row */}
+                    <div className="flex items-center gap-4">
+                      {/* Status Badge */}
+                      <Badge className="
+                        bg-[#FFE9D5] 
+                        text-[#B45309] 
+                        hover:bg-[#FFE9D5] 
+                        dark:bg-amber-900/40 
+                        dark:text-amber-200 
+                        border-0 
+                        font-medium 
+                        text-xs 
+                        px-3 
+                        py-1 
+                        rounded-full
+                      ">
+                        {request.status}
+                      </Badge>
+                      
+                      {/* Due Date - Single line, grey text, 14px */}
+                      <div className="flex items-center gap-1.5 text-sm text-[#4B5563] dark:text-gray-400">
+                        <Calendar className="h-4 w-4" />
+                        <span className="font-normal">Due: {request.dueDate}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                {/* Right Section - Upload Button */}
+                {/* Right Column - Upload Button */}
                 <div className="flex-shrink-0">
                   <Button 
                     onClick={() => handleRespondToRequest(request.id, request.docType)}
