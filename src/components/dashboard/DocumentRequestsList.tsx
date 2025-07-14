@@ -76,7 +76,7 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
         </div>
       </div>
 
-      {/* Stacked Document Request Cards */}
+      {/* Document Request Cards */}
       <div className="space-y-4">
         {documentRequests.map((request, index) => (
           <Card key={request.id} className="
@@ -91,14 +91,14 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
             duration-200
             overflow-hidden
           ">
-            {/* Top Orange Border Strip */}
+            {/* Top Orange Border */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-orange-600" />
             
             <CardContent className="p-5">
               <div className="flex items-center justify-between gap-6">
-                {/* Left Section */}
+                {/* Left Section - Icon and Content */}
                 <div className="flex items-center gap-4 flex-1">
-                  {/* Document Icon */}
+                  {/* Document Icon - Top-left aligned */}
                   <div className="
                     p-3 
                     rounded-xl 
@@ -108,20 +108,20 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                     border 
                     border-orange-200/50 
                     dark:border-amber-800/50
+                    self-start
                   ">
                     <FileText className="h-6 w-6 text-orange-600 dark:text-amber-400" />
                   </div>
                   
-                  {/* Content */}
-                  <div className="flex-1 space-y-2">
-                    {/* Title */}
+                  {/* Stacked Content */}
+                  <div className="flex-1 space-y-3">
+                    {/* Document Title */}
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
                       {request.docType}
                     </h3>
                     
-                    {/* Status and Due Date Row */}
+                    {/* Status and Due Date in Single Line */}
                     <div className="flex items-center gap-4">
-                      {/* Status Badge */}
                       <Badge className="
                         bg-orange-100 
                         text-orange-800 
@@ -138,7 +138,6 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                         {request.status}
                       </Badge>
                       
-                      {/* Due Date */}
                       <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
                         <Calendar className="h-4 w-4" />
                         <span className="font-medium">Due: {request.dueDate}</span>
