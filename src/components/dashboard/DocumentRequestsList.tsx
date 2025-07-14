@@ -77,7 +77,7 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
       </div>
 
       {/* Document Request Cards */}
-      <div className="space-y-5">
+      <div className="space-y-4">
         {documentRequests.map((request, index) => (
           <Card key={request.id} className="
             relative 
@@ -94,15 +94,15 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
             {/* Top Orange Border - 5px height */}
             <div className="absolute top-0 left-0 right-0 h-[5px] bg-[#E65100]" />
             
-            <CardContent className="p-5">
-              {/* Two Column Layout */}
-              <div className="flex items-center justify-between gap-6">
-                {/* Left Column - Info Section */}
+            <CardContent className="p-6">
+              {/* Main Content Layout */}
+              <div className="flex items-center justify-between">
+                {/* Left Section - Icon and Content */}
                 <div className="flex items-center gap-4 flex-1">
                   {/* Icon in rounded square */}
                   <div className="
-                    w-8 
-                    h-8 
+                    w-10 
+                    h-10 
                     rounded-lg 
                     bg-[#FFE0B2] 
                     dark:bg-amber-900/30 
@@ -111,18 +111,18 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                     justify-center
                     flex-shrink-0
                   ">
-                    <FileText className="h-4 w-4 text-orange-600 dark:text-amber-400" />
+                    <FileText className="h-5 w-5 text-orange-600 dark:text-amber-400" />
                   </div>
                   
                   {/* Content Section */}
-                  <div className="space-y-2 flex-1">
-                    {/* Document Title - Bold, 18px */}
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                  <div className="flex-1 min-w-0">
+                    {/* Document Title */}
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight mb-2">
                       {request.docType}
                     </h3>
                     
-                    {/* Status and Due Date in Single Inline Row */}
-                    <div className="flex items-center gap-4">
+                    {/* Status and Due Date Row */}
+                    <div className="flex items-center gap-6">
                       {/* Status Badge */}
                       <Badge className="
                         bg-[#FFE9D5] 
@@ -134,23 +134,26 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                         font-medium 
                         text-xs 
                         px-3 
-                        py-1 
+                        py-1.5 
                         rounded-full
                       ">
                         {request.status}
                       </Badge>
                       
-                      {/* Due Date - Single line, grey text, 14px */}
-                      <div className="flex items-center gap-1.5 text-sm text-[#4B5563] dark:text-gray-400">
-                        <Calendar className="h-4 w-4" />
-                        <span className="font-normal">Due: {request.dueDate}</span>
+                      {/* Due Date */}
+                      <div className="flex items-center gap-2 text-sm text-[#4B5563] dark:text-gray-400">
+                        <Calendar className="h-4 w-4 flex-shrink-0" />
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-500 dark:text-gray-500">Due:</span>
+                          <span className="font-medium text-gray-700 dark:text-gray-300">{request.dueDate}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                {/* Right Column - Upload Button */}
-                <div className="flex-shrink-0">
+                {/* Right Section - Upload Button */}
+                <div className="flex-shrink-0 ml-4">
                   <Button 
                     onClick={() => handleRespondToRequest(request.id, request.docType)}
                     className="
@@ -159,9 +162,9 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                       text-white 
                       font-medium 
                       px-4 
-                      py-2 
+                      py-2.5 
                       h-auto 
-                      rounded-full 
+                      rounded-lg 
                       shadow-sm 
                       hover:shadow-md 
                       transition-all 
@@ -169,11 +172,14 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
                       border-0
                       dark:bg-[#2563EB] 
                       dark:hover:bg-blue-700
+                      flex
+                      items-center
+                      gap-2
                     "
                     aria-label={`Upload ${request.docType} document`}
                   >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Document
+                    <Upload className="h-4 w-4" />
+                    Upload
                   </Button>
                 </div>
               </div>
@@ -185,7 +191,7 @@ const DocumentRequestsList = ({ requests }: DocumentRequestsListProps) => {
       {/* Footer note */}
       <div className="flex items-center justify-center pt-2">
         <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-          Click "Upload Document" to submit the requested files
+          Click "Upload" to submit the requested files
         </p>
       </div>
     </div>
